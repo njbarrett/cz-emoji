@@ -58,15 +58,15 @@ function formatScope(scope) {
   return scope ? `(${scope})` : ''
 }
 
-function formatHead({ type, scope, subject }) {
-  return [type, formatScope(scope), subject]
+function formatHead({ type, issues, scope, subject }) {
+  return [type, formatIssues(issues), formatScope(scope), subject]
     .filter(Boolean)
     .map(s => s.trim())
     .join(' ')
 }
 
 function formatIssues(issues) {
-  return issues ? '(' + (issues.split(/[ ,]+/).filter(Boolean) || []).join(', ') : ')'
+  return issues ? '(' + (issues.split(/[ ,]+/).filter(Boolean) || []).join(', ') + ')' : ''
 }
 
 /**
@@ -154,9 +154,8 @@ function format(answers) {
 
   const head = truncate(answers.subject, columns)
   const body = wrap(answers.body || '', columns)
-  const issues = formatIssues(answers.issues)
 
-  return [issues, head, body]
+  return [head, body]
     .filter(Boolean)
     .join('\n\n')
     .trim()
