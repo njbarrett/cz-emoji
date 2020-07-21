@@ -66,7 +66,7 @@ function formatHead({ type, scope, subject }) {
 }
 
 function formatIssues(issues) {
-  return issues ? '(' + (issues.match(/#\d+/g) || []).join(', ') : ')'
+  return issues ? '(' + (issues.split(/[ ,]+/).filter(Boolean) || []).join(', ') : ')'
 }
 
 /**
