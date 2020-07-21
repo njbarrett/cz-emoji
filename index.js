@@ -66,7 +66,7 @@ function formatHead({ type, scope, subject }) {
 }
 
 function formatIssues(issues) {
-  return issues ? 'Closes ' + (issues.match(/#\d+/g) || []).join(', closes ') : ''
+  return issues ? '(' + (issues.match(/#\d+/g) || []).join(', ') : ')'
 }
 
 /**
@@ -91,6 +91,15 @@ function createQuestions(config) {
   })
 
   const questions = [
+    {
+      type: 'input',
+      name: 'issues',
+      message:
+        config.questions && config.questions.issues
+          ? config.questions.issues
+          : 'List any issue closed (#1, #2, ...):',
+      when: !config.skipQuestions.includes('issues')
+    },
     {
       type: 'autocomplete',
       name: 'type',
@@ -126,18 +135,9 @@ function createQuestions(config) {
       message:
         config.questions && config.questions.body
           ? config.questions.body
-          : 'Provide a longer description:',
+          : 'Provide a longer description (if neccessary):',
       when: !config.skipQuestions.includes('body')
     },
-    {
-      type: 'input',
-      name: 'issues',
-      message:
-        config.questions && config.questions.issues
-          ? config.questions.issues
-          : 'List any issue closed (#1, #2, ...):',
-      when: !config.skipQuestions.includes('issues')
-    }
   ]
 
   return questions
@@ -154,9 +154,9 @@ function format(answers) {
 
   const head = truncate(answers.subject, columns)
   const body = wrap(answers.body || '', columns)
-  const footer = formatIssues(answers.issues)
+  const issues = formatIssues(answers.issues)
 
-  return [head, body, footer]
+  return [issues, head, body]
     .filter(Boolean)
     .join('\n\n')
     .trim()
